@@ -1,4 +1,4 @@
-FROM jupyter/datascience-notebook:latest
+FROM jupyter/datascience-notebook:lab-1.2.5
 COPY jupyter_notebook_config.json /opt/conda/etc/jupyter/jupyter_notebook_config.json
 
 USER root
@@ -31,9 +31,8 @@ RUN pip install jupyterlab_irods==3.0.2 \
 # install jupyterlab hub-extension, lab-manager, bokeh
 RUN jupyter lab --version \
     && jupyter labextension install @jupyterlab/hub-extension \
-                                    @jupyter-widgets/jupyterlab-manager \
-                                    jupyterlab_bokeh 
-                              
+                                    @jupyter-widgets/jupyterlab-manager
+
 # install jupyterlab git extension
 RUN jupyter labextension install @jupyterlab/git && \
         pip install --upgrade jupyterlab-git && \
@@ -42,11 +41,17 @@ RUN jupyter labextension install @jupyterlab/git && \
 # install jupyterlab github extension
 RUN jupyter labextension install @jupyterlab/github
 
-# add Zsh kernel
-#RUN python3 -mpip install notebook zsh_jupyter_kernel && python3 -mzsh_jupyter_kernel.install --sys-prefix
-
 # add Bash kernel
-RUN pip install bash_kernel && python3 -m bash_kernel.install 
+RUN pip install bash_kernel && python3 -m bash_kernel.install
+
+# install fastqe fastqe
+# https://github.com/lonsbio/fastqe
+RUN pip install fastqe
+
+# install fastp
+RUN wget http://opengene.org/fastp/fastp && \
+ chmod a+x ./fastp &&\
+ mv fastp /bin
 
 RUN usermod -d /home/jovyan -u 1000 jovyan
 RUN chown -R jovyan:users /home/jovyan
